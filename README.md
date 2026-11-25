@@ -57,21 +57,19 @@ accepts them on plain HTTP).
 ## Publish to GitHub Pages
 
 The repo root is `site/` — deliberately, so `../urjo-kual/cookies.txt` and the
-KUAL extension copies stay out of version control.
+KUAL extension copies stay out of version control. The repo is already
+initialized here (branch `main`); publishing is push + enable Pages.
 
-```sh
-cd site
-git init -b main
-git add .
-git commit -m "Static e-ink frontend"
-```
-
-Create an empty repo on GitHub (no README), then:
+Create an empty repo on GitHub (no README, no .gitignore), then:
 
 ```sh
 git remote add origin git@github.com:<you>/<repo>.git
 git push -u origin main
 ```
+
+In the repo: **Settings → Pages → Build and deployment → Source: GitHub
+Actions**. The workflow at [.github/workflows/pages.yml](./.github/workflows/pages.yml)
+runs `python3 build.py --offline` and publishes `static/`.
 
 Enable Pages: **Settings → Pages → Source: GitHub Actions**. The workflow in
 `.github/workflows/pages.yml` runs `build.py --offline` on every push to
