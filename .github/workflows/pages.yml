@@ -12,15 +12,16 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  # Do not cancel an in-progress production deployment.
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
 
@@ -28,6 +29,8 @@ jobs:
       # no cookies, no outbound calls to urjo.com.
       - name: Build static site
         run: python3 build.py --offline
+
+      - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -41,4 +44,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
