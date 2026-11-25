@@ -342,6 +342,19 @@
     b.className = on ? 'btn' : 'btn disabled';
   }
 
+  /* Offline fallback: serve a puzzle from the baked pool when the server
+     is unreachable (GitHub Pages, relay down). solveId 'local' keeps
+     doSave() from POSTing and showResult() labels it "local (not saved)". */
+  function startLocalPuzzle() {
+    var pool = window.LOCAL_PUZZLES;
+    if (!pool || !pool.length) return false;
+    var s = pool[Math.floor(Math.random() * pool.length)];
+    state = { solveId: 'local', setup: s, t0: Date.now(), log: [] };
+    beginGame();
+    setSaveState('');
+    return true;
+  }
+
   function fetchActive() {
     if (busy || resumePending) return;
     if (state) {
@@ -371,7 +384,11 @@
       } else {
         setNewEnabled(true);
         if (err) {
-          setStatus('Could not reach server to check for a saved puzzle.', 'err');
+          if (startLocalPuzzle()) {
+            setStatus('Server unreachable \u2014 loaded a local puzzle.', 'ok');
+          } else {
+            setStatus('Could not reach server to check for a saved puzzle.', 'err');
+          }
         } else {
           setStatus('No saved puzzle on server. Tap "New puzzle" to start.', '');
         }
@@ -401,6 +418,8 @@
         setStatus('Puzzle loaded. Tap a cell to fill.', 'ok');
       } else if (!err && data && data.success === false) {
         setStatus('Rate limited — wait 10–45s and try New again.', 'err');
+      } else if (startLocalPuzzle()) {
+        setStatus('Server unreachable \u2014 loaded a local puzzle.', 'ok');
       } else {
         setStatus('Failed to load puzzle. Check Wi-Fi.', 'err');
       }

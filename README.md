@@ -87,9 +87,14 @@ call 404s and the frontend falls back to the baked-in snapshot.
 | Works | Needs the relay |
 | --- | --- |
 | All 10 pages, nav, e-ink styling | Live refresh (snapshot note stays) |
-| Puzzles from `pool.js` (10 000) | Login / logout |
+| Game page via baked `puzzles.js` (45) | Fresh server puzzles, login / logout |
 | Tutorial, create, rules, stats | Saving or resuming progress |
 | Snapshot views of top/home/live/profile | Replays after the snapshot date |
+
+On Pages the Game page still plays: `fetchActive` and `newPuzzle` fall back to
+a puzzle from `puzzles.js` when the API is unreachable, and the result banner
+reads `local (not saved)`. (`pool.js` is the trainer's puzzle source and is not
+used by the game.)
 
 Refresh the snapshots locally before publishing if you want them current:
 
