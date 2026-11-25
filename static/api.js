@@ -2,12 +2,30 @@
  * ES5 only: no let/const/arrow/fetch/promises. Works on PW2's old WebKit.
  */
 
+/* ---- API base -------------------------------------------------------- */
+/* Empty = same-origin: relay.py serves this page and proxies the API.
+ * When the page is hosted where no relay runs (GitHub Pages), point this at a
+ * public relay. Set window.URJO_API_BASE in index.html, or at runtime:
+ *   localStorage.urjoApiBase = 'https://<your-relay>'
+ */
+var API_BASE = '';
+if (typeof window !== 'undefined') {
+  API_BASE = window.URJO_API_BASE || '';
+  try {
+    if (!API_BASE && window.localStorage) {
+      API_BASE = window.localStorage.getItem('urjoApiBase') || '';
+    }
+  } catch (e) {}
+}
+if (API_BASE && API_BASE.charAt(API_BASE.length - 1) !== '/') API_BASE += '/';
+
 /* ---- XHR ----------------------------------------------------------- */
 
 /* POST JSON to a relay path. cb(err, parsedJsonOrText) */
 function apiPost(path, body, cb) {
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', path, true);
+  xhr.open('POST', API_BASE + path, true);
+  if (API_BASE) xhr.withCredentials = true;
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onreadystatechange = function () {
     if (xhr.readyState !== 4) return;
@@ -25,7 +43,8 @@ function apiPost(path, body, cb) {
 /* GET text. cb(err, text) */
 function apiGet(path, headers, cb) {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', path, true);
+  xhr.open('GET', API_BASE + path, true);
+  if (API_BASE) xhr.withCredentials = true;
   if (headers) {
     for (var k in headers) {
       if (headers.hasOwnProperty(k)) xhr.setRequestHeader(k, headers[k]);

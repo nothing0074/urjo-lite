@@ -96,6 +96,54 @@ a puzzle from `puzzles.js` when the API is unreachable, and the result banner
 reads `local (not saved)`. (`pool.js` is the trainer's puzzle source and is not
 used by the game.)
 
+### Pointing Pages at a live backend
+
+`apiPost`/`serverFn` build **relative** URLs (`v1/`, `_serverFn/...`), so they
+resolve against whatever host serves the page:
+
+- **Same origin as `relay.py`** (local, Kindle, VPS) — the relay proxies to
+  urjo.com, so CORS never enters into it. This is the default.
+- **GitHub Pages** — the page origin is `*.github.io`, which is static-only.
+  `POST /v1/` answers **405** and `_serverFn/` answers **404**, which is what
+  the status line reports as "Server unreachable".
+
+Pointing the page straight at `urjo.com` does not help: urjo.com sends no
+`Access-Control-Allow-Origin` on `POST /v1/`, on the `OPTIONS` preflight (it
+returns the SPA's HTML instead) or on `/_serverFn/...`, so the browser throws
+the response away. It is not this site's server to configure.
+
+So run `relay.py` somewhere public and tell the page where it is:
+
+```sh
+# 1. expose the relay — Cloudflare quick tunnel, no account needed
+cloudflared tunnel --url http://localhost:8080
+#   -> https://random-words-here.trycloudflare.com
+
+# 2. allow the Pages origin (already in the default allowlist)
+RELAY_CORS_ORIGINS="https://<you>.github.io" python3 relay.py 8080
+
+# 3. point the page at it — static/index.html, in <head>
+window.URJO_API_BASE = 'https://random-words-here.trycloudflare.com';
+```
+
+Step 3 can also be done at runtime, without rebuilding:
+
+```js
+localStorage.urjoApiBase = 'https://random-words-here.trycloudflare.com';
+```
+
+What the relay does for cross-origin callers:
+
+- answers `OPTIONS` preflights locally, never forwarding them upstream;
+- emits `Access-Control-Allow-Origin`/`-Credentials` only for origins on the
+  allowlist — same-origin traffic gets no CORS headers, exactly as before;
+- rewrites upstream cookies to `SameSite=None; Secure` for cross-site callers,
+  which browsers require for credentialed XHR. That means the relay must be
+  reached over HTTPS; tunnels and a VPS behind TLS both qualify.
+
+Until `URJO_API_BASE` is set, Pages keeps using the offline `puzzles.js`
+fallback described above.
+
 Refresh the snapshots locally before publishing if you want them current:
 
 ```sh
