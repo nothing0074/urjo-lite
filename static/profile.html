@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Urjo — Profile</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav" id="nav"><!--nav:begin--><a href="home.html">Home</a><a href="index.html">Game</a><a href="rules.html">Rules</a><a href="stats.html">Stats</a><a href="top.html">Top</a><a href="tutorial.html">Tutorial</a><a href="create.html">Create</a><a href="live.html">Live</a><a href="profile.html" class="on">Profile</a><a href="https://urjo.miraheze.org/wiki/Main_Page" target="_blank" rel="noopener noreferrer">Wiki ↗</a><a href="https://discord.gg/t6JATXqUQm" target="_blank" rel="noopener noreferrer">Discord ↗</a><!--nav:end--></nav>
+  <h1>Profile</h1>
+
+  <div id="prof" class="msg">Loading...</div>
+
+  <div id="toolbar">
+    <button id="btn-refresh" class="btn">Refresh</button>
+  </div>
+  <div id="snapnote" class="muted"></div>
+
+  <div id="login-box" style="display:none">
+    <h2>Log in</h2>
+    <p class="muted">Enter your email. We send a one-time code.</p>
+    <div class="field"><label for="email">Email</label>
+      <input type="email" id="email" autocomplete="email"></div>
+    <div class="field" id="code-row" style="display:none"><label for="code">Code</label>
+      <input type="text" id="code" inputmode="numeric" autocomplete="one-time-code"></div>
+    <button id="btn-login" class="btn primary">Send code</button>
+    <div id="login-msg" class="msg"></div>
+  </div>
+
+  <div id="flag-box" style="display:none">
+    <h2>Solve stats</h2>
+    <div id="flagstats" class="msg">Loading...</div>
+  </div>
+
+</div>
+<script src="api.js"></script>
+<script id="snap">window.SNAP = {"profile": {"idx":{"email":null,"lang":"en","unsaved_progress":3,"avatar":null,"flairPts":0,"preferences":{"difficulty":"normal","lang":null,"preferredSizes":"4,6,8"},"myChallenges":[],"recLinks":[]},"topMe":null,"flagName":null,"flag":null}}; window.SNAP_META = {"generated":"2026-11-25T07:41:23.733931+00:00","key":"profile"};</script>
+<script>
+var IDX_FN = 'e77becf7744507eed8cdde837ea4d6a06d2b4d2a82bfb661bab3a14cc544f11c';
+var FLAG_FN = 'cc8b50309740b795c553c724796c470ca268018d6020d64d0fbfe08f54a0b0e7';
+var TOP_FN = 'b36b81a6ef94f87ffeede021e5fd01d42f323635e0d6ec43781a661583b77c6e';
+var step = 0; /* 0 = enter email, 1 = enter code */
+/* snapshot from build.py: { idx, topMe, flagName, flag } */
+var snap = (window.SNAP && window.SNAP.profile) || null;
+
+function loginMsg(text, cls) {
+  var el = document.getElementById('login-msg');
+  el.className = 'msg' + (cls ? ' ' + cls : '');
+  el.innerHTML = text;
+}
+
+function doLogin() {
+  var email = document.getElementById('email').value.replace(/^\s+|\s+$/g, '');
+  var codeEl = document.getElementById('code');
+  if (!email || email.indexOf('@') < 0) {
+    loginMsg('Enter a valid email.', 'flash');
+    return;
+  }
+  if (step === 0) {
+    loginMsg('Sending code...');
+    apiPost('api/', { type: 'start', email: email }, function (err, data) {
+      if (err) { loginMsg('Send failed. Check relay/Wi-Fi.', 'flash'); return; }
+      step = 1;
+      document.getElementById('code-row').style.display = 'block';
+      document.getElementById('btn-login').innerHTML = 'Log in';
+      loginMsg('Code sent. Check your email, then enter it.');
+    });
+  } else {
+    var token = (codeEl.value || '').replace(/^\s+|\s+$/g, '');
+    if (!token) { loginMsg('Enter the code from your email.', 'flash'); return; }
+    loginMsg('Logging in...');
+    apiPost('api/', { type: 'login', email: email, token: token }, function (err, data) {
+      if (err) { loginMsg('Login failed. Check relay/Wi-Fi.', 'flash'); return; }
+      if (data && data.success) { location.reload(); return; }
+      loginMsg('Wrong code, try again.', 'flash');
+    });
+  }
+}
+document.getElementById('btn-login').onclick = doLogin;
+
+function row(label, val) {
+  if (val === null || val === undefined || val === '') return '';
+  return '<tr><td>' + label + '</td><td class="num">' + esc(val) + '</td></tr>';
+}
+
+function showFlag(r) {
+  var box = document.getElementById('flag-box');
+  var out = document.getElementById('flagstats');
+  box.style.display = 'block';
+  var html = '<table class="data">';
+  html += row('Rating', r.currentRating);
+  html += row('World rank', r.simulatedRank);
+  html += row('Country rank', r.countryRank);
+  html += row('Region rank', r.topRegionRank);
+  html += row('Best rating', r.topRating);
+  html += row('Total solves', r.totalSolves);
+  html += row('Perfect solves', r.zeroMistakeSolves);
+  html += row('Perfect rate', r.zeroMistakeRate ? Math.round(r.zeroMistakeRate * 100) + '%' : null);
+  html += row('Avg mistakes', r.avgMistakes);
+  html += row('Current streak', r.currentStreak);
+  html += row('Best streak', r.bestStreak);
+  html += row('Active days', r.activeDays);
+  html += row('First solve', r.firstSolve ? new Date(r.firstSolve).toLocaleString() : null);
+  html += row('Last solve', r.lastSolve ? new Date(r.lastSolve).toLocaleString() : null);
+  html += '</table>';
+  out.innerHTML = html;
+}
+
+function flagFromTopMe(topMe) {
+  if (!topMe || !topMe.out) return null;
+  for (var i = 0; i < topMe.out.length; i++) {
+    var r0 = topMe.out[i];
+    if (r0.you && (r0.avatarFlag || r0.avatarName)) {
+      return (r0.avatarFlag || '') + (r0.avatarName || '');
+    }
+  }
+  return null;
+}
+
+function loadFlagStats(flag, useSnap) {
+  if (!flag) return;
+  if (useSnap && snap && snap.flag && snap.flagName === flag) {
+    showFlag(snap.flag);
+    return;
+  }
+  var box = document.getElementById('flag-box');
+  var out = document.getElementById('flagstats');
+  box.style.display = 'block';
+  out.innerHTML = 'Loading...';
+  serverFn(FLAG_FN, { flagName: flag }, function (err, val) {
+    if (!err && val && val.result) {
+      showFlag(val.result);
+      return;
+    }
+    if (useSnap && snap && snap.flag) { showFlag(snap.flag); return; }
+    out.innerHTML = '<span class="flash">Could not load stats.</span>';
+  });
+}
+
+function showProfile(r) {
+  var el = document.getElementById('prof');
+  if (!r.email) {
+    el.innerHTML = '<span class="muted">Not logged in.</span>';
+    document.getElementById('login-box').style.display = 'block';
+    return;
+  }
+  var p = r.preferences || {};
+  var html = '<table class="data">';
+  html += row('Email', r.email);
+  html += row('Language', r.lang);
+  html += row('Difficulty', p.difficulty);
+  html += row('Board sizes', p.preferredSizes);
+  html += '</table>';
+  el.innerHTML = html;
+}
+
+function load(live) {
+  if (!live && snap && snap.idx) {
+    showProfile(snap.idx);
+    if (snap.idx.email) loadFlagStats(snap.flagName || flagFromTopMe(snap.topMe), true);
+    snapNote(document.getElementById('snapnote'), load);
+    return;
+  }
+  serverFn(IDX_FN, null, function (err, val) {
+    if (!err && val && val.result) {
+      var r = val.result;
+      showProfile(r);
+      snapNote(document.getElementById('snapnote'), load);
+      if (r.email) {
+        /* find own flag via top "me" view, then load flag stats */
+        serverFn(TOP_FN, { view: 'me', country: '', region: '' }, function (err2, val2) {
+          if (err2 || !val2 || !val2.result) return;
+          loadFlagStats(flagFromTopMe(val2.result), false);
+        });
+      }
+      return;
+    }
+    if (snap && snap.idx) {
+      showProfile(snap.idx);
+      if (snap.idx.email) loadFlagStats(snap.flagName || flagFromTopMe(snap.topMe), true);
+      document.getElementById('snapnote').innerHTML =
+        '<span class="flash">Live update failed \u2014 showing snapshot.</span>';
+      return;
+    }
+    document.getElementById('prof').innerHTML =
+      '<span class="flash">Could not load profile. Check the relay.</span>';
+  });
+}
+
+document.getElementById('btn-refresh').onclick = function () { load(true); };
+load(false);
+</script>
+</body>
+</html>

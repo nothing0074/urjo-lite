@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Urjo — Stats</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav" id="nav"><!--nav:begin--><a href="home.html">Home</a><a href="index.html">Game</a><a href="rules.html">Rules</a><a href="stats.html" class="on">Stats</a><a href="top.html">Top</a><a href="tutorial.html">Tutorial</a><a href="create.html">Create</a><a href="live.html">Live</a><a href="profile.html">Profile</a><a href="https://urjo.miraheze.org/wiki/Main_Page" target="_blank" rel="noopener noreferrer">Wiki ↗</a><a href="https://discord.gg/t6JATXqUQm" target="_blank" rel="noopener noreferrer">Discord ↗</a><!--nav:end--></nav>
+  <h1>Site stats</h1>
+
+  <div id="toolbar">
+    <button id="btn-refresh" class="btn">Refresh</button>
+  </div>
+
+  <div id="snapnote" class="muted"></div>
+  <div id="stats" class="msg">Loading...</div>
+
+  <div class="help">
+    <p>Numbers come from a build-time snapshot. Tap Refresh for live numbers.</p>
+  </div>
+
+</div>
+<script src="api.js"></script>
+<script id="snap">window.SNAP = {"stats": {"registered_users":"3106","last_24h_solves":"34598","last_24h_solvers":"904","total_solves_approx":"15141387"}}; window.SNAP_META = {"generated":"2026-11-25T07:41:15.462687+00:00","key":"stats"};</script>
+<script>
+/* 8b3fd33a... -> { registered_users, last_24h_solves, last_24h_solvers,
+                    total_solves_approx } (all strings) */
+var STATS_FN = '8b3fd33af90fcae61bb866b5376aaafc75ecd95447d4971fc28b573dda94b898';
+var snap = (window.SNAP && window.SNAP.stats) || null;
+
+function render(r) {
+  var el = document.getElementById('stats');
+  var rows = [
+    ['Registered users', r.registered_users],
+    ['Solves (last 24h)', r.last_24h_solves],
+    ['Solvers (last 24h)', r.last_24h_solvers],
+    ['Total solves (approx)', r.total_solves_approx]
+  ];
+  var html = '<table class="data">';
+  for (var i = 0; i < rows.length; i++) {
+    html += '<tr><td>' + rows[i][0] + '</td><td class="num">' + esc(rows[i][1]) + '</td></tr>';
+  }
+  html += '</table>';
+  el.innerHTML = html;
+}
+
+function load(live) {
+  if (!live && snap) {
+    render(snap);
+    snapNote(document.getElementById('snapnote'), load);
+    return;
+  }
+  serverFn(STATS_FN, null, function (err, val) {
+    if (!err && val && val.result) {
+      snap = val.result;
+      render(snap);
+      snapNote(document.getElementById('snapnote'), load);
+      return;
+    }
+    if (snap) {
+      render(snap);
+      document.getElementById('snapnote').innerHTML =
+        '<span class="flash">Live update failed \u2014 showing snapshot.</span>';
+      return;
+    }
+    document.getElementById('stats').innerHTML =
+      '<span class="flash">Could not load stats. Check the relay and Wi-Fi.</span>';
+  });
+}
+
+document.getElementById('btn-refresh').onclick = function () { load(true); };
+load(false);
+</script>
+</body>
+</html>

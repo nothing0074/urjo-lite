@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Urjo — Tutorial</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="nav" id="nav"><!--nav:begin--><a href="home.html">Home</a><a href="index.html">Game</a><a href="rules.html">Rules</a><a href="stats.html">Stats</a><a href="top.html">Top</a><a href="tutorial.html" class="on">Tutorial</a><a href="create.html">Create</a><a href="live.html">Live</a><a href="profile.html">Profile</a><a href="https://urjo.miraheze.org/wiki/Main_Page" target="_blank" rel="noopener noreferrer">Wiki ↗</a><a href="https://discord.gg/t6JATXqUQm" target="_blank" rel="noopener noreferrer">Discord ↗</a><!--nav:end--></nav>
+<main>
+<h1>Tutorial</h1>
+<div id="step-line" class="muted">Loading…</div>
+<div class="instr" id="instr"></div>
+<table id="grid" class="viewer"></table>
+<div class="palette" id="palette">
+  <span class="lbl">Color:</span>
+  <button class="btn on" data-v="X" id="pal-x">X (blue)</button>
+  <button class="btn" data-v="O" id="pal-o">O (red)</button>
+</div>
+<div class="toolbar">
+  <button class="btn" id="btn-answer">Show answer &amp; next</button>
+  <button class="btn" id="btn-restart">Restart tutorial</button>
+  <span class="muted" id="tut-status"></span>
+</div>
+<div id="done" style="display:none">
+  <div class="instr">Tutorial complete. Continue below.</div>
+  <div class="toolbar">
+    <a class="btn" href="index.html">Play the game</a>
+    <a class="btn" href="rules.html">Rules</a>
+    <a class="btn" href="create.html">Create</a>
+  </div>
+</div>
+<div class="help">
+  <strong>How to play:</strong> every line (row) needs equal blue (X) and red (O)
+  spots. Neighbouring lines must differ. A number on a spot means exactly that
+  many of its up-to-8 neighbours share its colour. Tap a spot with the selected
+  color; tap a filled spot to clear it.
+</div>
+</main>
+<script src="api.js"></script>
+<script src="puzzlib.js"></script>
+<script>
+(function () {
+  'use strict';
+  function $(id) { return document.getElementById(id); }
+
+  var RAW = [
+    '3002f0201m210202 (0,4,8,12) Each line requires 2 red and 2 blue spots. Select blue.',
+    '3002f0201m211202 (8,9,10,11) This line already contains 2 blue spots. Color the remaining spots red.',
+    '3002f0201n211202 (8,9,10,11) This line already contains 2 blue spots. Color the remaining spots red.',
+    '3002f0201n311202 (0,1,4,5,8,9) Red spot with number 2 must have 2 red spots around it. Color the remaining spots blue.',
+    '3102f0201n311202 (0,1,4,5,8,9) Red spot with number 2 must have 2 red spots around it. Color the remaining spots blue.',
+    '3102f1201n311202 (1,5,9,13) Required: 2 red and 2 blue spots.',
+    '3102f1201n311302 (8,9,10,11,12,13,14,15) Adjacent lines must be different. This spot cannot be red, as it would create identical lines.',
+    '3102f1201n311312 (12,13,14,15) Required: 2 red and 2 blue spots.',
+    '3102f1201n311313 (4,5,6,8,9,10,12,13,14) Red spot with number 4 requires 4 red spots around it. Currently 3 red spots present. Color the last undecided spot red.',
+    '3102f1301n311313 (2,6,10,14) Required: 2 red and 2 blue spots.',
+    '3112f1301n311313 (0,1,2,3)',
+    '3113f1301n311313 (3,7,11,15)',
+    '3113f1311n311313 Tutorial complete. Continue below.'
+  ];
+
+  var STEPS = [], i;
+  for (i = 0; i < RAW.length; i++) {
+    var m = RAW[i].match(/^(\S+)(?: \(([^)]*)\))?\s*(.*)$/);
+    var cl = [];
+    if (m[2]) {
+      var parts = m[2].split(',');
+      for (var j = 0; j < parts.length; j++) cl.push(parseInt(parts[j], 10));
+    }
+    STEPS.push({ setup: m[1], cells: cl, text: m[3] });
+  }
+
+  var idx = 0, side = 4, cells = [], selected = 'X', mistakes = 0;
+  var advanceTimer = null;
+
+  function nextTarget() {
+    return idx + 1 < STEPS.length ? STEPS[idx + 1] : null;
+  }
+
+  function matches(st) {
+    var i, cell;
+    if (!st) return false;
+    var tgt = Puzz.decodeSetup(st.setup);
+    for (i = 0; i < cells.length; i++) {
+      cell = cells[i];
+      if (cell.filled !== tgt[i].colored) return false;
+      if (tgt[i].colored && cell.value !== tgt[i].solution) return false;
+    }
+    return true;
+  }
+
+  function render() {
+    var t = $('grid');
+    t.innerHTML = '';
+    var r, c, idx2, td, tr;
+    for (r = 0; r < side; r++) {
+      tr = document.createElement('tr');
+      for (c = 0; c < side; c++) {
+        idx2 = r * side + c;
+        td = document.createElement('td');
+        Puzz.paintCell(td, cells[idx2]);
+        var hl = false, k;
+        for (k = 0; k < STEPS[idx].cells.length; k++) {
+          if (STEPS[idx].cells[k] === idx2) { hl = true; break; }
+        }
+        if (hl) td.className += ' hl';
+        if (!cells[idx2].colored) td.className += ' editable';
+        td.setAttribute('data-i', idx2);
+        tr.appendChild(td);
+      }
+      t.appendChild(tr);
+    }
+  }
+
+  function updateStatus() {
+    $('tut-status').textContent = 'Mistakes: ' + mistakes;
+    $('step-line').textContent = 'Step ' + (idx + 1) + ' / ' + STEPS.length;
+  }
+
+  function loadStep() {
+    var st = STEPS[idx];
+    side = Puzz.sideOf(st.setup);
+    cells = Puzz.decodeSetup(st.setup);
+    render();
+    updateStatus();
+    var text = st.text || 'Color the highlighted cells.';
+    $('instr').textContent = text;
+    if (idx === STEPS.length - 1) {
+      $('done').style.display = 'block';
+      $('palette').style.display = 'none';
+      $('btn-answer').style.display = 'none';
+      /* real site posts welcome-finish here; ignore errors */
+      serverFn('24df7870e956532f16e56cfd35da00534ec64e9a233d13fa397a19b641065c4e',
+               {}, function () {});
+    } else {
+      $('done').style.display = 'none';
+    }
+  }
+
+  function advance() {
+    if (advanceTimer) return;
+    advanceTimer = setTimeout(function () {
+      advanceTimer = null;
+      if (idx < STEPS.length - 1) {
+        idx++;
+        loadStep();
+      }
+    }, 350);
+  }
+
+  function afterChange() {
+    render();
+    updateStatus();
+    if (nextTarget() && matches(nextTarget())) advance();
+  }
+
+  function tap(idx2) {
+    if (advanceTimer) return;
+    var cell = cells[idx2];
+    if (cell.colored) return;
+    if (cell.filled) {
+      cell.filled = false;
+      cell.value = null;
+      afterChange();
+      return;
+    }
+    var tgt = nextTarget();
+    if (tgt) {
+      var want = Puzz.decodeSetup(tgt.setup)[idx2];
+      if (!want.colored || want.solution !== selected) mistakes++;
+    }
+    cell.filled = true;
+    cell.value = selected;
+    afterChange();
+  }
+
+  $('grid').onclick = function (e) {
+    var td = e.target;
+    while (td && td !== this && !td.getAttribute('data-i')) td = td.parentNode;
+    if (!td || !td.getAttribute) return;
+    var v = td.getAttribute('data-i');
+    if (v === null) return;
+    tap(parseInt(v, 10));
+  };
+
+  function selectColor(v) {
+    selected = v;
+    $('pal-x').className = v === 'X' ? 'btn on' : 'btn';
+    $('pal-o').className = v === 'O' ? 'btn on' : 'btn';
+  }
+  $('pal-x').onclick = function () { selectColor('X'); };
+  $('pal-o').onclick = function () { selectColor('O'); };
+
+  $('btn-answer').onclick = function () {
+    if (idx >= STEPS.length - 1 || advanceTimer) return;
+    var tgt = Puzz.decodeSetup(STEPS[idx + 1].setup);
+    for (var i2 = 0; i2 < cells.length; i2++) {
+      cells[i2].filled = tgt[i2].colored;
+      cells[i2].value = tgt[i2].colored ? tgt[i2].solution : null;
+    }
+    advance();
+    render();
+    updateStatus();
+  };
+
+  $('btn-restart').onclick = function () {
+    idx = 0; mistakes = 0;
+    if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+    loadStep();
+  };
+
+  loadStep();
+})();
+</script>
+</body>
+</html>

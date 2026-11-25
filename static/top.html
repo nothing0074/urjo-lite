@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Urjo — Top</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav" id="nav"><!--nav:begin--><a href="home.html">Home</a><a href="index.html">Game</a><a href="rules.html">Rules</a><a href="stats.html">Stats</a><a href="top.html" class="on">Top</a><a href="tutorial.html">Tutorial</a><a href="create.html">Create</a><a href="live.html">Live</a><a href="profile.html">Profile</a><a href="https://urjo.miraheze.org/wiki/Main_Page" target="_blank" rel="noopener noreferrer">Wiki ↗</a><a href="https://discord.gg/t6JATXqUQm" target="_blank" rel="noopener noreferrer">Discord ↗</a><!--nav:end--></nav>
+  <h1>Top players</h1>
+
+  <div id="toolbar">
+    <button id="v-me" class="btn on">Me</button>
+    <button id="v-top100" class="btn">Top 100</button>
+    <button id="v-start" class="btn">Started With Me</button>
+    <button id="v-new" class="btn">New Solvers</button>
+    <button id="v-region" class="btn">By Region</button>
+    <button id="v-country" class="btn">By Country</button>
+    <button id="v-refresh" class="btn">Refresh</button>
+  </div>
+
+  <div id="f-region" style="display:none">
+    <label for="sel-region">Region</label>
+    <select id="sel-region"></select>
+  </div>
+  <div id="f-country" style="display:none">
+    <label for="sel-country">Country</label>
+    <select id="sel-country"></select>
+  </div>
+
+  <div id="snapnote" class="muted"></div>
+  <div id="me" class="msg"></div>
+  <div id="board" class="msg">Loading...</div>
+
+</div>
+<script src="api.js"></script>
+<script id="snap">window.SNAP = {"top": {"out":[{"rank":2787,"displayRating":1572,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":165},{"rank":2788,"displayRating":1572,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":50},{"rank":2789,"displayRating":1572,"avatarFlag":"IN","avatarName":"VBJ","avatarFlairSlot":null,"you":false,"solved":61},{"rank":2790,"displayRating":1572,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":113},{"rank":2791,"displayRating":1572,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":205},{"rank":2792,"displayRating":1572,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":137},{"rank":2793,"displayRating":1572,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":53},{"rank":2794,"displayRating":1571,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":150},{"rank":2795,"displayRating":1571,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":56},{"rank":2796,"displayRating":1571,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":163},{"rank":2797,"displayRating":1571,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":83},{"rank":2798,"displayRating":1571,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":338},{"rank":2799,"displayRating":1571,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":50},{"rank":2800,"displayRating":1571,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":162},{"rank":2801,"displayRating":1570,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":156},{"rank":2802,"displayRating":1569,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":93},{"rank":2803,"displayRating":1569,"avatarFlag":"BR","avatarName":"CEG","avatarFlairSlot":null,"you":false,"solved":51},{"rank":2804,"displayRating":1569,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":62},{"rank":2805,"displayRating":1569,"avatarFlag":"US","avatarName":"JET","avatarFlairSlot":null,"you":false,"solved":57},{"rank":2806,"displayRating":1569,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":129},{"rank":2807,"displayRating":1568,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":118},{"rank":2808,"displayRating":1568,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":154},{"rank":2809,"displayRating":1568,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":64},{"rank":2810,"displayRating":1568,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":86},{"rank":2811,"displayRating":1568,"avatarFlag":"MY","avatarName":"ALE","avatarFlairSlot":null,"you":false,"solved":99},{"rank":2812,"displayRating":1568,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":75},{"rank":2813,"displayRating":1568,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":59},{"rank":2814,"displayRating":1568,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":80},{"rank":2815,"displayRating":1568,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":80},{"rank":2816,"displayRating":1567,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":66},{"rank":2817,"displayRating":1567,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":87},{"rank":2818,"displayRating":1567,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":189},{"rank":2819,"displayRating":1567,"avatarFlag":"DZ","avatarName":"LAM","avatarFlairSlot":null,"you":false,"solved":80},{"rank":2820,"displayRating":1567,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":110},{"rank":2821,"displayRating":1567,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":59},{"rank":2822,"displayRating":1567,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":268},{"rank":2823,"displayRating":1566,"avatarFlag":"TR","avatarName":"XTR","avatarFlairSlot":null,"you":false,"solved":54},{"rank":2824,"displayRating":1566,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":68},{"rank":2825,"displayRating":1566,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":63},{"rank":2826,"displayRating":1566,"avatarFlag":"GR","avatarName":"DEM","avatarFlairSlot":null,"you":false,"solved":214},{"rank":2827,"displayRating":1566,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":137},{"rank":2828,"displayRating":1565,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":151},{"rank":2829,"displayRating":1565,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":241},{"rank":2830,"displayRating":1565,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":103},{"rank":2831,"displayRating":1565,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":91},{"rank":2832,"displayRating":1564,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":80},{"rank":2833,"displayRating":1564,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":82},{"rank":2834,"displayRating":1564,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":116},{"rank":2835,"displayRating":1563,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":119},{"rank":2836,"displayRating":1563,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":101},{"rank":2837,"displayRating":1563,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":true,"solved":3,"simulated":true},{"rank":2837,"displayRating":1563,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":89},{"rank":2838,"displayRating":1563,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":404},{"rank":2839,"displayRating":1563,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":68},{"rank":2840,"displayRating":1563,"avatarFlag":"GR","avatarName":"INA","avatarFlairSlot":null,"you":false,"solved":94},{"rank":2841,"displayRating":1563,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":59},{"rank":2842,"displayRating":1562,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":134},{"rank":2843,"displayRating":1562,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":132},{"rank":2844,"displayRating":1562,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":56},{"rank":2845,"displayRating":1562,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":50},{"rank":2846,"displayRating":1562,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":65},{"rank":2847,"displayRating":1562,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":54},{"rank":2848,"displayRating":1562,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":56},{"rank":2849,"displayRating":1561,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":65},{"rank":2850,"displayRating":1561,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":118},{"rank":2851,"displayRating":1561,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":75},{"rank":2852,"displayRating":1560,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":67},{"rank":2853,"displayRating":1560,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":58},{"rank":2854,"displayRating":1560,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":59},{"rank":2855,"displayRating":1560,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":134},{"rank":2856,"displayRating":1560,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":65},{"rank":2857,"displayRating":1560,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":113},{"rank":2858,"displayRating":1559,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":124},{"rank":2859,"displayRating":1559,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":198},{"rank":2860,"displayRating":1559,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":59},{"rank":2861,"displayRating":1559,"avatarFlag":"PH","avatarName":"ERI","avatarFlairSlot":null,"you":false,"solved":74},{"rank":2862,"displayRating":1558,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":125},{"rank":2863,"displayRating":1558,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":59},{"rank":2864,"displayRating":1558,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":73},{"rank":2865,"displayRating":1558,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":127},{"rank":2866,"displayRating":1557,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":65},{"rank":2867,"displayRating":1557,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":80},{"rank":2868,"displayRating":1557,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":68},{"rank":2869,"displayRating":1557,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":72},{"rank":2870,"displayRating":1556,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":51},{"rank":2871,"displayRating":1555,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":83},{"rank":2872,"displayRating":1555,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":78},{"rank":2873,"displayRating":1554,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":6323},{"rank":2874,"displayRating":1554,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":79},{"rank":2875,"displayRating":1553,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":107},{"rank":2876,"displayRating":1553,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":59},{"rank":2877,"displayRating":1553,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":94},{"rank":2878,"displayRating":1553,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":53},{"rank":2879,"displayRating":1552,"avatarFlag":"NO","avatarName":"OIV","avatarFlairSlot":null,"you":false,"solved":3579},{"rank":2880,"displayRating":1552,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":96},{"rank":2881,"displayRating":1552,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":172},{"rank":2882,"displayRating":1552,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":54},{"rank":2883,"displayRating":1552,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":95},{"rank":2884,"displayRating":1551,"avatarFlag":null,"avatarName":null,"avatarFlairSlot":null,"you":false,"solved":95},{"rank":2885,"displayRating":1551,"avatarFlag":"BD","avatarName":"RDT","avatarFlairSlot":null,"you":false,"solved":62},{"rank":2886,"displayRating":1551,"avatarFlag":"IN","avatarName":"SUN","avatarFlairSlot":null,"you":false,"solved":56}],"userRank":2837,"userRating":1563,"userGames":3,"isActuallyRanked":false,"view":"me","selectedCountry":"FI","selectedRegion":"Europe","isAllRegion":false}}; window.SNAP_META = {"generated":"2026-11-25T07:41:11.585409+00:00","key":"top"};</script>
+<script>
+/* b36b81a6... -> { out:[{rank,displayRating,avatarFlag,avatarName,you,solved}],
+                     userRank, userRating, userGames, isActuallyRanked, view,
+                     selectedCountry, selectedRegion, isAllRegion }
+ * Tab semantics mirror the live site: Me sends no view, region sends only
+ * {region}, country sends only {country}. */
+var TOP_FN = 'b36b81a6ef94f87ffeede021e5fd01d42f323635e0d6ec43781a661583b77c6e';
+var TABS = ['me', 'top100', 'start', 'new', 'region', 'country'];
+/* Live site's region list (M$ without `Other`). */
+var REGIONS = ['Any region', 'Europe', 'Asia', 'North America', 'South America',
+               'Africa', 'Oceania', 'Finland vs Sweden'];
+/* Live site's country map: ISO=Name pairs. */
+var CC_STR = "AF=Afghanistan|AG=Antigua and Barbuda|AI=Anguilla|AL=Albania|AM=Armenia|AO=Angola|AQ=Antarctica|AR=Argentina|AS=American Samoa|AT=Austria|AU=Australia|AW=Aruba|AX=Åland Islands|AZ=Azerbaijan|BA=Bosnia and Herzegovina|BB=Barbados|BD=Bangladesh|BE=Belgium|BF=Burkina Faso|BG=Bulgaria|BH=Bahrain|BI=Burundi|BJ=Benin|BL=Saint Barthélemy|BM=Bermuda|BN=Brunei Darussalam|BO=Bolivia|BQ=Bonaire, Sint Eustatius and Saba|BR=Brazil|BS=Bahamas|BT=Bhutan|BV=Bouvet Island|BW=Botswana|BY=Belarus|BZ=Belize|CA=Canada|CC=Cocos (Keeling) Islands|CD=Congo, Democratic Republic of the|CF=Central African Republic|CG=Congo|CH=Switzerland|CI=Cote d'Ivoire|CK=Cook Islands|CL=Chile|CM=Cameroon|CN=China|CO=Colombia|CR=Costa Rica|CU=Cuba|CV=Cape Verde|CW=Curaçao|CX=Christmas Island|CY=Cyprus|CZ=Czech Republic|DE=Germany|DJ=Djibouti|DK=Denmark|DM=Dominica|DO=Dominican Republic|DZ=Algeria|EC=Ecuador|EE=Estonia|EG=Egypt|EH=Western Sahara|ER=Eritrea|ES=Spain|ET=Ethiopia|EU=European Union|FI=Finland|FJ=Fiji|FK=Falkland Islands|FM=Federated States of Micronesia|FO=Faroe Islands|FR=France|GA=Gabon|GB=United Kingdom|GD=Grenada|GE=Georgia|GF=French Guiana|GG=Guernsey|GH=Ghana|GI=Gibraltar|GL=Greenland|GM=Gambia|GN=Guinea|GP=Guadeloupe|GQ=Equatorial Guinea|GR=Greece|GS=South Georgia and the South Sandwich Islands|GT=Guatemala|GU=Guam|GW=Guinea-Bissau|GY=Guyana|HK=Hong Kong|HM=Heard Island and McDonald Islands|HN=Honduras|HR=Croatia|HT=Haiti|HU=Hungary|ID=Indonesia|IE=Ireland|IC=Canary Islands|IL=Israel|IM=Isle of Man|IN=India|IO=British Indian Ocean Territory|IQ=Iraq|IR=Iran|IS=Iceland|IT=Italy|JE=Jersey|JM=Jamaica|JO=Jordan|JP=Japan|KE=Kenya|KG=Kyrgyzstan|KH=Cambodia|KI=Kiribati|KM=Comoros|KN=Saint Kitts and Nevis|KP=North Korea|KR=South Korea|KW=Kuwait|KY=Cayman Islands|KZ=Kazakhstan|LA=Laos|LB=Lebanon|LC=Saint Lucia|LI=Liechtenstein|LK=Sri Lanka|LR=Liberia|LS=Lesotho|LT=Lithuania|LU=Luxembourg|LV=Latvia|LY=Libya|MA=Morocco|MC=Monaco|MD=Moldova|ME=Montenegro|MF=Saint Martin (French Part)|MG=Madagascar|MH=Marshall Islands|MK=North Macedonia|ML=Mali|MM=Burma|MN=Mongolia|MO=Macao|MP=Northern Mariana Islands|MQ=Martinique|MR=Mauritania|MS=Montserrat|MT=Malta|MU=Mauritius|MV=Maldives|MW=Malawi|MX=Mexico|MY=Malaysia|MZ=Mozambique|NA=Namibia|NC=New Caledonia|NE=Niger|NF=Norfolk Island|NG=Nigeria|NI=Nicaragua|NL=Netherlands|NO=Norway|NP=Nepal|NR=Nauru|NU=Niue|NZ=New Zealand|OM=Oman|OS=South Ossetia|PA=Panama|PE=Peru|PF=French Polynesia|PG=Papua New Guinea|PH=Philippines|PK=Pakistan|PL=Poland|PM=Saint Pierre and Miquelon|PN=Pitcairn|PR=Puerto Rico|PS=Palestine|PT=Portugal|PW=Palau|PY=Paraguay|QA=Qatar|RE=Reunion|RO=Romania|RS=Serbia|RU=Russia|RW=Rwanda|SA=Saudi Arabia|SB=Solomon Islands|SC=Seychelles|SD=Sudan|SE=Sweden|SG=Singapore|SH=Saint Helena|SI=Slovenia|SJ=Svalbard and Jan Mayen|SK=Slovakia|SL=Sierra Leone|SM=San Marino|SN=Senegal|SO=Somalia|SR=Suriname|SS=South Sudan|ST=Sao Tome and Principe|SV=El Salvador|SX=Sint Maarten|SY=Syria|SZ=Swaziland|TA=Tristan da Cunha|TC=Turks and Caicos Islands|TD=Chad|TF=French Southern Territories|TG=Togo|TH=Thailand|TJ=Tajikistan|TK=Tokelau|TL=Timor-Leste|TM=Turkmenistan|TN=Tunisia|TO=Tonga|TR=Türkiye|TT=Trinidad and Tobago|TV=Tuvalu|TW=Taiwan|TZ=Tanzania|UA=Ukraine|UG=Uganda|UM=United States Minor Outlying Islands|US=United States|UY=Uruguay|UZ=Uzbekistan|VA=Holy See (Vatican City State)|VC=Saint Vincent and the Grenadines|VE=Venezuela|VG=Virgin Islands, British|VI=Virgin Islands, U.S.|VN=Vietnam|VU=Vanuatu|WF=Wallis and Futuna|WS=Samoa|XC=Northern Cyprus|XK=Kosovo|YE=Yemen|YT=Mayotte|ZA=South Africa|ZM=Zambia|ZW=Zimbabwe";
+
+var state = { view: 'me', country: '', region: 'Any region' };
+var cache = {};
+var isSeed = {};
+
+function ckey(s) {
+  if (s.view === 'region') return 'region|' + s.region;
+  if (s.view === 'country') return 'country|' + s.country;
+  return s.view;
+}
+
+function payload(s) {
+  if (s.view === 'me') return {};
+  if (s.view === 'region') return { region: s.region };
+  if (s.view === 'country') return { country: s.country };
+  return { view: s.view };
+}
+
+/* Baked snapshot seeds the Me tab and supplies your default country/region. */
+var seed = (window.SNAP && window.SNAP.top) || null;
+if (seed) {
+  if (seed.selectedCountry) state.country = seed.selectedCountry;
+  if (seed.selectedRegion) state.region = seed.selectedRegion;
+}
+
+function buildRegionSelect() {
+  var sel = document.getElementById('sel-region');
+  var html = '';
+  for (var i = 0; i < REGIONS.length; i++) {
+    html += '<option value="' + esc(REGIONS[i]) + '">' + esc(REGIONS[i]) + '</option>';
+  }
+  sel.innerHTML = html;
+  if (state.region) sel.value = state.region;
+  if (!sel.value) { sel.selectedIndex = 0; state.region = sel.value; }
+}
+
+function buildCountrySelect() {
+  var sel = document.getElementById('sel-country');
+  var parts = CC_STR.split('|');
+  var html = '';
+  for (var i = 0; i < parts.length; i++) {
+    var eq = parts[i].indexOf('=');
+    var code = parts[i].substring(0, eq);
+    var name = parts[i].substring(eq + 1);
+    html += '<option value="' + esc(code) + '">' + esc(name) + '</option>';
+  }
+  sel.innerHTML = html;
+  if (state.country) sel.value = state.country;
+  if (!sel.value) { sel.selectedIndex = 0; state.country = sel.value; }
+}
+
+buildRegionSelect();
+buildCountrySelect();
+
+if (seed) {
+  var seedKey = ckey(state);
+  cache[seedKey] = seed;
+  isSeed[seedKey] = true;
+}
+
+function setView(v) {
+  state.view = v;
+  for (var i = 0; i < TABS.length; i++) {
+    var b = document.getElementById('v-' + TABS[i]);
+    if (b) b.className = 'btn' + (TABS[i] === v ? ' on' : '');
+  }
+  document.getElementById('f-region').style.display = (v === 'region') ? '' : 'none';
+  document.getElementById('f-country').style.display = (v === 'country') ? '' : 'none';
+  load(false);
+}
+
+function render(r) {
+  var me = document.getElementById('me');
+  var meHtml = '';
+  if (r.userRating !== undefined && r.userRating !== null) {
+    meHtml = '<b>You:</b> rating ' + esc(r.userRating) +
+             ' &middot; rank ' + esc(r.userRank === null || r.userRank === undefined ? '-' : r.userRank) +
+             ' &middot; games ' + esc(r.userGames) +
+             (r.isActuallyRanked ? '' : ' <span class="muted">(unranked view)</span>');
+  }
+  me.innerHTML = meHtml;
+
+  var out = r.out || [];
+  var board = document.getElementById('board');
+  if (!out.length) {
+    board.innerHTML = '<span class="muted">No rows.</span>';
+    return;
+  }
+  var html = '<table class="data"><tr><th>#</th><th>Player</th><th class="num">Rating</th><th class="num">Solved</th></tr>';
+  for (var i = 0; i < out.length; i++) {
+    var row = out[i];
+    var name = esc(row.avatarName || (row.you ? 'You' : '?'));
+    if (row.avatarFlag) name = esc(row.avatarFlag) + ' ' + name;
+    html += '<tr' + (row.you ? ' class="you"' : '') + '>' +
+            '<td>' + esc(row.rank) + '</td>' +
+            '<td>' + name + '</td>' +
+            '<td class="num">' + esc(row.displayRating) + '</td>' +
+            '<td class="num">' + esc(row.solved) + '</td>' +
+            '</tr>';
+  }
+  html += '</table>';
+  board.innerHTML = html;
+}
+
+function note(stale) {
+  var el = document.getElementById('snapnote');
+  if (stale) snapNote(el, load);
+  else el.innerHTML = '';
+}
+
+/* Keep the dropdowns in step with what the server echoes back. */
+function syncSelects(r) {
+  if (r.view !== state.view) return;
+  if (state.view === 'region' && r.selectedRegion) {
+    state.region = r.selectedRegion;
+    document.getElementById('sel-region').value = r.selectedRegion;
+  }
+  if (state.view === 'country' && r.selectedCountry) {
+    state.country = r.selectedCountry;
+    document.getElementById('sel-country').value = r.selectedCountry;
+  }
+}
+
+function load(live) {
+  var key = ckey(state);
+  if (!live && cache[key]) {
+    render(cache[key]);
+    note(!!isSeed[key]);
+    return;
+  }
+  var board = document.getElementById('board');
+  if (!cache[key]) {
+    board.innerHTML = 'Loading...';
+    note(false);
+  }
+  serverFn(TOP_FN, payload(state), function (err, val) {
+    if (!err && val && val.result) {
+      cache[key] = val.result;
+      isSeed[key] = false;
+      syncSelects(val.result);
+      render(val.result);
+      note(false);
+      return;
+    }
+    if (cache[key]) {
+      render(cache[key]);
+      note(true);
+      return;
+    }
+    board.innerHTML = '<span class="flash">Could not load top list. Check the relay.</span>';
+  });
+}
+
+for (var t = 0; t < TABS.length; t++) {
+  (function (v) {
+    var b = document.getElementById('v-' + v);
+    if (b) b.onclick = function () { setView(v); };
+  })(TABS[t]);
+}
+document.getElementById('sel-region').onchange = function () {
+  state.region = this.value;
+  load(false);
+};
+document.getElementById('sel-country').onchange = function () {
+  state.country = this.value;
+  load(false);
+};
+document.getElementById('v-refresh').onclick = function () { load(true); };
+load(false);
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Urjo — Trainer</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  #tr-hdr { overflow: hidden; padding: 6px 0; font-size: 14px; }
+  #tr-hdr .fl { float: left; margin-right: 10px; }
+  #tr-hdr .fr { float: right; }
+  #rating-chip { border: 2px solid #000; padding: 3px 8px; background: #fff; font-weight: bold; }
+  #tr-count { border: 2px solid #000; padding: 3px 8px; margin-right: 6px; }
+  #tr-timer { border: 2px solid #000; padding: 3px 8px; min-width: 58px; text-align: center; display: inline-block; }
+  #deduct-badge { display: none; border: 2px solid #000; padding: 3px 6px; margin-right: 6px; background: #eee; }
+  #tr-config { max-width: 150px; }
+  #tr-tools { clear: both; overflow: hidden; padding: 6px 0; }
+  #tr-tools .btn { min-width: 44px; min-height: 44px; margin: 2px 6px 2px 0; }
+  #tr-status { min-height: 22px; font-size: 14px; padding: 4px 0; }
+  #grid td.ghost .sym.faint { opacity: 0.28; }
+  #grid td.ghost { cursor: pointer; }
+  #grid td.locked { cursor: default; }
+  #tr-end { display: none; border: 3px solid #000; padding: 12px; margin-top: 10px; background: #fff; }
+  #tr-end h2 { margin: 0 0 8px; font-size: 20px; }
+  #tr-end table { border-collapse: collapse; margin-bottom: 10px; }
+  #tr-end td { border: 1px solid #666; padding: 4px 8px; font-size: 14px; }
+  #tr-end td.k { background: #eee; font-weight: bold; }
+  #tr-end .btn { min-height: 44px; margin: 4px 6px 0 0; }
+  .muted { color: #555; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav" id="nav"><!--nav:begin--><a href="home.html">Home</a><a href="index.html">Game</a><a href="rules.html">Rules</a><a href="stats.html">Stats</a><a href="top.html">Top</a><a href="tutorial.html">Tutorial</a><a href="create.html">Create</a><a href="live.html">Live</a><a href="profile.html">Profile</a><a href="https://urjo.miraheze.org/wiki/Main_Page" target="_blank" rel="noopener noreferrer">Wiki ↗</a><a href="https://discord.gg/t6JATXqUQm" target="_blank" rel="noopener noreferrer">Discord ↗</a><!--nav:end--></nav>
+
+  <header class="hdr">
+    <span>Urjo Trainer</span>
+    <span id="tr-timer">3:00</span>
+  </header>
+
+  <div id="tr-hdr">
+    <span class="fl"><span id="tr-count" title="Positions solved">0</span><span id="deduct-badge"></span></span>
+    <span class="fl"><select id="tr-config" title="Trainer config">
+      <option value="1">Beginner</option>
+      <option value="2">Intermediate</option>
+      <option value="3">Expert</option>
+      <option value="4">Marathon</option>
+      <option value="5">Sudden death</option>
+    </select></span>
+    <span class="fr"><span id="rating-chip" title="Glicko-2 player rating r=1200 rd=200 — used internally for matchmaking only.">1200</span>
+    <button id="tr-restart" class="btn" title="Restart run">↻</button></span>
+  </div>
+
+  <div id="tr-tools">
+    <button id="tr-pick-x" class="btn swatch swatch-x on" title="Place X">X</button>
+    <button id="tr-pick-o" class="btn swatch swatch-o" title="Place O">O</button>
+    <span id="tr-status">Pick a side, then tap an empty cell.</span>
+  </div>
+
+  <div id="grid-wrap">
+    <table id="grid"></table>
+  </div>
+
+  <div id="tr-end">
+    <h2 id="tr-end-title">Time is up</h2>
+    <table id="tr-stats"></table>
+    <button id="tr-again" class="btn primary">Restart</button>
+    <button id="tr-share" class="btn">Share</button>
+    <span id="tr-share-state" class="muted"></span>
+  </div>
+
+  <div class="help">
+    <p><b>Trainer:</b> timed run against the position pool. One move ends each position — a correct placement scores it, a wrong one is a mistake. Mistakes cost time; hard solves earn a bonus. Rating updates after every position (Glicko-2).</p>
+  </div>
+
+</div>
+<script src="api.js"></script>
+<script src="puzzlib.js"></script>
+<script src="pool.js"></script>
+<script src="trainer.js"></script>
+</body>
+</html>

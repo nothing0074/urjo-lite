@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Urjo — Create</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="nav" id="nav"><!--nav:begin--><a href="home.html">Home</a><a href="index.html">Game</a><a href="rules.html">Rules</a><a href="stats.html">Stats</a><a href="top.html">Top</a><a href="tutorial.html">Tutorial</a><a href="create.html" class="on">Create</a><a href="live.html">Live</a><a href="profile.html">Profile</a><a href="https://urjo.miraheze.org/wiki/Main_Page" target="_blank" rel="noopener noreferrer">Wiki ↗</a><a href="https://discord.gg/t6JATXqUQm" target="_blank" rel="noopener noreferrer">Discord ↗</a><!--nav:end--></nav>
+<main>
+<h1>Create a puzzle</h1>
+<div class="toolbar">
+  <label class="muted">Size
+    <select id="size-sel">
+      <option value="4">4 × 4</option>
+      <option value="6">6 × 6</option>
+      <option value="8">8 × 8</option>
+      <option value="10">10 × 10</option>
+    </select>
+  </label>
+  <button class="btn" id="btn-random">Random</button>
+  <button class="btn" id="btn-minimal">Minimal</button>
+  <button class="btn" id="btn-reduce">Reduce</button>
+  <button class="btn" id="btn-solve">Solve</button>
+  <button class="btn" id="btn-undo">Undo</button>
+  <button class="btn" id="btn-redo">Redo</button>
+  <button class="btn" id="btn-groups">Groups: off</button>
+  <a class="btn primary" id="btn-play" href="index.html">Play</a>
+</div>
+<div class="palette" id="palette">
+  <span class="lbl">Tool:</span>
+  <button class="btn on" data-k="color" data-v="X">X blue</button>
+  <button class="btn" data-k="color" data-v="O">O red</button>
+  <button class="btn" data-k="clear">Clear</button>
+  <button class="btn" data-k="num" data-v="0">N0</button>
+  <button class="btn" data-k="num" data-v="1">N1</button>
+  <button class="btn" data-k="num" data-v="2">N2</button>
+  <button class="btn" data-k="num" data-v="3">N3</button>
+  <button class="btn" data-k="num" data-v="4">N4</button>
+  <button class="btn" data-k="num" data-v="5">N5</button>
+  <button class="btn" data-k="num" data-v="6">N6</button>
+  <button class="btn" data-k="num" data-v="7">N7</button>
+  <button class="btn" data-k="num" data-v="8">N8</button>
+</div>
+<table id="grid"></table>
+<div class="msg" id="create-status"></div>
+<div class="field">
+  <div class="muted">Setup string (share / import):</div>
+  <textarea id="setup-box" class="setup-box" readonly></textarea>
+  <button class="btn" id="btn-import">Import setup</button>
+  <button class="btn" id="btn-copy">Select text</button>
+</div>
+<div class="field">
+  <div class="muted">Number filter for generation (unchecked = allowed):</div>
+  <span id="filter-box"></span>
+</div>
+<div class="help">
+  Tap cells with the selected tool. <strong>X / O</strong> set a given colour,
+  <strong>Clear</strong> removes colour and number, <strong>N0–N8</strong> set or
+  remove a neighbour-count clue. Generate a board, press Reduce to strip
+  redundant clues while keeping a unique solution, then Play.
+</div>
+</main>
+<script src="api.js"></script>
+<script src="puzzlib.js"></script>
+<script>
+(function () {
+  'use strict';
+  function $(id) { return document.getElementById(id); }
+
+  var size = 4, board = [], tool = { k: 'color', v: 'X' };
+  var groups = false, blocked = {};
+  var hist = [], hpos = -1;
+
+  function status(msg) { $('create-status').textContent = msg || ''; }
+
+  function snapshot() { return { size: size, s: Puzz.encodeSetup(board) }; }
+
+  function pushHist() {
+    var snap = snapshot();
+    if (hpos >= 0 && hist[hpos].size === snap.size && hist[hpos].s === snap.s) return;
+    hist = hist.slice(0, hpos + 1);
+    hist.push(snap);
+    if (hist.length > 60) hist.shift();
+    hpos = hist.length - 1;
+    updateSetupBox();
+  }
+
+  function restore(snap) {
+    size = snap.size;
+    $('size-sel').value = String(size);
+    board = Puzz.decodeSetup(snap.s);
+    render();
+    updateSetupBox();
+  }
+
+  function undo() { if (hpos > 0) { hpos--; restore(hist[hpos]); } }
+  function redo() { if (hpos < hist.length - 1) { hpos++; restore(hist[hpos]); } }
+
+  function updateSetupBox() {
+    var s = Puzz.encodeSetup(board);
+    $('setup-box').value = s;
+    $('btn-play').href = 'index.html?setup=' + s;
+  }
+
+  function render() {
+    var t = $('grid');
+    t.innerHTML = '';
+    var r, c, i, td, tr;
+    for (r = 0; r < size; r++) {
+      tr = document.createElement('tr');
+      for (c = 0; c < size; c++) {
+        i = r * size + c;
+        td = document.createElement('td');
+        Puzz.paintCell(td, board[i]);
+        td.className += ' editable';
+        if (groups && !board[i].colored && !board[i].filled) {
+          td.innerHTML += '<span class="gsol">' + board[i].solution + '</span>';
+        }
+        td.setAttribute('data-i', i);
+        tr.appendChild(td);
+      }
+      t.appendChild(tr);
+    }
+  }
+
+  function applyTool(i) {
+    var cell = board[i];
+    if (tool.k === 'color') {
+      cell.colored = true;
+      cell.solution = tool.v;
+    } else if (tool.k === 'clear') {
+      cell.colored = false;
+      cell.number = null;
+    } else {
+      var n = tool.v;
+      cell.number = (cell.number === n) ? null : n;
+    }
+    pushHist();
+    render();
+    status('');
+  }
+
+  $('grid').onclick = function (e) {
+    var td = e.target;
+    while (td && td !== this && !td.getAttribute('data-i')) td = td.parentNode;
+    if (!td || !td.getAttribute) return;
+    var v = td.getAttribute('data-i');
+    if (v === null) return;
+    applyTool(parseInt(v, 10));
+  };
+
+  var palBtns = $('palette').getElementsByTagName('button');
+  function selectTool(k, v, btn) {
+    tool = { k: k, v: v };
+    for (var i = 0; i < palBtns.length; i++) palBtns[i].className = 'btn';
+    btn.className = 'btn on';
+  }
+  $('palette').onclick = function (e) {
+    var b = e.target;
+    while (b && b !== this && !b.getAttribute('data-k')) b = b.parentNode;
+    if (!b || !b.getAttribute) return;
+    var v = b.getAttribute('data-v');
+    selectTool(b.getAttribute('data-k'), v === null ? null : v, b);
+  };
+
+  /* ---- generation ------------------------------------------------- */
+  function stripBlocked(b) {
+    var i;
+    for (i = 0; i < b.length; i++) {
+      if (b[i].number !== null && blocked[b[i].number]) b[i].number = null;
+    }
+    return b;
+  }
+
+  function generate(mode) {
+    status('Generating…');
+    var attempt, b, res, i, givens;
+    givens = mode === 'minimal' ? 0 : 0.12;
+    for (attempt = 0; attempt < 25; attempt++) {
+      b = Puzz.randomBoard(size);
+      Puzz.withNumbers(b, size);
+      for (i = 0; i < b.length; i++) {
+        if (Math.random() < givens) b[i].colored = true;
+      }
+      stripBlocked(b);
+      b = Puzz.reduce(b, size, { timeCap: 2500 });
+      stripBlocked(b);
+      res = Puzz.solve(b, size, { timeCap: 3000 });
+      if (res.count === 1) {
+        board = b;
+        pushHist();
+        render();
+        status(mode === 'minimal' ? 'Minimal puzzle ready (unique).'
+                                  : 'Random puzzle ready (unique).');
+        return;
+      }
+    }
+    board = b;
+    pushHist();
+    render();
+    status('Generated (solution not fully verified).');
+  }
+
+  $('btn-random').onclick = function () {
+    status('Generating…');
+    setTimeout(function () { generate('random'); }, 30);
+  };
+  $('btn-minimal').onclick = function () {
+    status('Generating…');
+    setTimeout(function () { generate('minimal'); }, 30);
+  };
+
+  $('btn-reduce').onclick = function () {
+    status('Reducing…');
+    setTimeout(function () {
+      var out = Puzz.reduce(board, size, { timeCap: 3000 });
+      stripBlocked(out);
+      var res = Puzz.solve(out, size, { timeCap: 3000 });
+      board = out;
+      pushHist();
+      render();
+      status(res.count === 1 ? 'Reduced — still unique.'
+                             : 'Reduced (uniqueness not verified).');
+    }, 30);
+  };
+
+  $('btn-solve').onclick = function () {
+    status('Solving…');
+    setTimeout(function () {
+      var res = Puzz.solve(board, size, { timeCap: 5000 });
+      if (res.count === 1) status('Unique solution.');
+      else if (res.count === 2) status('Multiple solutions.');
+      else if (res.count === 0) status('No solution — check the clues.');
+      else status('Could not verify within time budget.');
+    }, 30);
+  };
+
+  $('btn-undo').onclick = undo;
+  $('btn-redo').onclick = redo;
+
+  $('btn-groups').onclick = function () {
+    groups = !groups;
+    this.textContent = 'Groups: ' + (groups ? 'on' : 'off');
+    render();
+  };
+
+  $('size-sel').onchange = function () {
+    var s = parseInt(this.value, 10);
+    if (!confirm('Changing size clears the board. Continue?')) {
+      this.value = String(size);
+      return;
+    }
+    size = s;
+    generate('random');
+  };
+
+  $('btn-import').onclick = function () {
+    var s = $('setup-box').value.replace(/\s+/g, '');
+    var st = Puzz.sideOf(s);
+    if (!st) { status('Bad setup length — not a square.'); return; }
+    size = st;
+    $('size-sel').value = String(size);
+    restore({ size: st, s: s });
+    hist = [{ size: st, s: s }]; hpos = 0;
+    status('Imported ' + size + '×' + size + ' setup.');
+  };
+
+  $('btn-copy').onclick = function () {
+    var box = $('setup-box');
+    box.focus();
+    box.select();
+    status('Setup text selected — use your browser copy.');
+  };
+
+  /* number filter checkboxes */
+  (function () {
+    var html = '', n;
+    for (n = 0; n <= 8; n++) {
+      html += '<label class="muted" style="margin-right:8px">' +
+              '<input type="checkbox" data-n="' + n + '" checked> ' + n +
+              '</label>';
+    }
+    $('filter-box').innerHTML = html;
+    $('filter-box').onclick = function (e) {
+      var el = e.target;
+      if (!el.getAttribute || el.getAttribute('data-n') === null) return;
+      var n2 = parseInt(el.getAttribute('data-n'), 10);
+      if (el.checked) delete blocked[n2]; else blocked[n2] = true;
+    };
+  })();
+
+  status('Generating…');
+  setTimeout(function () { generate('random'); }, 50);
+})();
+</script>
+</body>
+</html>

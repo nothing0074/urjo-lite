@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Urjo — Game</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav" id="nav"><!--nav:begin--><a href="home.html">Home</a><a href="index.html" class="on">Game</a><a href="rules.html">Rules</a><a href="stats.html">Stats</a><a href="top.html">Top</a><a href="tutorial.html">Tutorial</a><a href="create.html">Create</a><a href="live.html">Live</a><a href="profile.html">Profile</a><a href="https://urjo.miraheze.org/wiki/Main_Page" target="_blank" rel="noopener noreferrer">Wiki ↗</a><a href="https://discord.gg/t6JATXqUQm" target="_blank" rel="noopener noreferrer">Discord ↗</a><!--nav:end--></nav>
+
+  <header class="hdr">
+    <span id="title">URJO</span>
+    <span id="timer">00:00</span>
+  </header>
+
+  <div id="toolbar">
+    <div id="picker">
+      <button id="pick-x" class="swatch swatch-x selected" title="Red X">X</button>
+      <button id="pick-o" class="swatch swatch-o" title="Blue O">O</button>
+    </div>
+    <span id="mistakes">Mistakes: 0</span>
+  </div>
+
+  <div id="status">&nbsp;</div>
+
+  <div id="grid-wrap">
+    <table id="grid"></table>
+  </div>
+
+  <div id="result">
+    <h2>Puzzle complete!</h2>
+    <p class="res-line"><b>Time:</b> <span id="res-time">00:00</span></p>
+    <p class="res-line"><b>Mistakes:</b> <span id="res-mistakes">0</span></p>
+    <p class="res-line" id="res-msg"></p>
+    <p class="res-line" id="res-rating" style="display:none"></p>
+    <p class="res-line muted">Save: <span id="res-save"></span></p>
+    <div class="res-btns">
+      <button id="btn-res-new" class="btn primary">New puzzle</button>
+      <button id="btn-res-again" class="btn">Play again</button>
+      <button id="btn-res-board" class="btn">Show board</button>
+    </div>
+  </div>
+
+  <div id="footer">
+    <button id="btn-save" class="btn">Save</button>
+    <button id="btn-resume" class="btn">Resume</button>
+    <button id="btn-result" class="btn">Result</button>
+    <span id="save-state"></span>
+  </div>
+
+  <div class="help">
+    <p><b>Rules:</b> each row has equal red (X) and blue (O) spots; adjacent rows differ; a number N on a spot means exactly N of its 8 surrounding spots share its color.</p>
+    <p>Pick a color, then tap an empty cell. Correct fills count; wrong taps count as mistakes.</p>
+  </div>
+
+</div>
+<script src="api.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

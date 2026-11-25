@@ -1,0 +1,294 @@
+/* Urjo Kindle Paperwhite 2 stylesheet.
+ * Conservative e-ink CSS: no flexbox, no grid, no animation, no fixed positioning.
+ * Floats and inline-blocks only; 44px minimum tap targets; grayscale-safe colors.
+ * Grayscale PW2: feedback uses inversion/frames (visible in 16 gray levels),
+ * never near-white fills; no gray tap-highlight flash; no selection flash.
+ */
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: #000;
+  font-family: sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-text-size-adjust: none;
+}
+/* e-ink: transparent tap flash, no accidental selection (black flash) */
+body {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+input, textarea, select {
+  -webkit-user-select: text;
+  user-select: text;
+}
+::selection { background: #000; color: #fff; }
+
+/* ---- layout ------------------------------------------------------- */
+.wrap {
+  margin: 0 auto;
+  max-width: 760px;
+  padding: 8px;
+}
+h1 {
+  font-size: 22px;
+  margin: 8px 0 4px;
+  border-bottom: 2px solid #000;
+  padding-bottom: 4px;
+}
+h2 { font-size: 18px; margin: 14px 0 6px; }
+p  { margin: 6px 0; }
+a  { color: #004; }
+
+/* ---- nav ---------------------------------------------------------- */
+.nav {
+  overflow: hidden;
+  border-bottom: 1px solid #000;
+  margin-bottom: 8px;
+}
+.nav a {
+  display: inline-block;
+  padding: 12px 10px;
+  min-height: 44px;
+  line-height: 20px;
+  color: #000;
+  text-decoration: none;
+  border-right: 1px solid #666;
+}
+.nav a.on {
+  font-weight: bold;
+  background: #ccc;
+}
+
+/* ---- header / status ---------------------------------------------- */
+.hdr { overflow: hidden; margin-bottom: 6px; }
+.hdr .title { font-size: 20px; font-weight: bold; float: left; padding: 10px 0; }
+.hdr .timer {
+  float: right;
+  font-size: 26px;
+  font-weight: bold;
+  font-family: monospace;
+  padding: 6px 4px;
+  min-width: 90px;
+  text-align: right;
+}
+.tools { overflow: hidden; margin-bottom: 6px; }
+.btn {
+  display: inline-block;
+  padding: 12px 14px;
+  min-height: 44px;
+  min-width: 44px;
+  margin: 2px 4px 2px 0;
+  font-size: 16px;
+  background: #fff;
+  color: #000;
+  border: 2px solid #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn:active, .btn.on { background: #000; color: #fff; }
+.mist { float: right; padding: 12px 4px; font-size: 16px; }
+.status { clear: both; padding: 6px 0; font-size: 16px; min-height: 26px; }
+.flash  { color: #900; font-weight: bold; }
+.ok     { color: #060; font-weight: bold; }
+
+/* ---- game grid ----------------------------------------------------- */
+table.grid { border-collapse: collapse; margin: 6px 0; }
+td.cell, th.cell {
+  border: 2px solid #666;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  padding: 0;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 24px;
+  cursor: pointer;
+  background: #fff;
+}
+th.cell { background: #eee; font-size: 16px; cursor: default; }
+td.cell .num {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  font-size: 11px;
+  color: #444;
+}
+.x { color: #a00; font-weight: bold; }
+.o { color: #04c; font-weight: bold; }
+.mistake { background: #ddd; }
+.flash-ok { background: #fff; }
+.flash-bad { background: #bbb; }
+
+/* ---- forms / tables ------------------------------------------------ */
+label { display: block; margin: 8px 0 2px; font-weight: bold; }
+input[type=text], input[type=email], input[type=password], select {
+  width: 100%;
+  max-width: 480px;
+  padding: 12px 8px;
+  min-height: 44px;
+  font-size: 16px;
+  border: 2px solid #000;
+  background: #fff;
+}
+table.data {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8px 0;
+  font-size: 15px;
+}
+table.data th, table.data td {
+  border: 1px solid #666;
+  padding: 8px 6px;
+  text-align: left;
+}
+table.data th { background: #eee; }
+table.data tr.you td { background: #ddd; font-weight: bold; }
+td.num, th.num { text-align: right; }
+
+/* ---- game page (KUAL port) ------------------------------------------ */
+.hdr { overflow: hidden; }
+#title { float: left; font-size: 22px; font-weight: bold; padding: 6px 0; }
+#timer { float: right; font-size: 22px; font-family: monospace; padding: 6px 0; }
+#toolbar { clear: both; overflow: hidden; padding: 6px 0; }
+#picker { display: inline-block; margin-left: 8px; vertical-align: middle; }
+.swatch {
+  font-size: 20px; font-weight: bold;
+  width: 44px; height: 44px;
+  border: 2px solid #000;
+  margin-right: 6px; cursor: pointer;
+  background: #fff; color: #000;
+}
+.swatch-x { color: #c00; }
+.swatch-o { color: #06c; }
+.swatch.selected { background: #000; color: #fff; }
+.swatch-x.selected { background: #c00; border-color: #c00; color: #fff; }
+.swatch-o.selected { background: #06c; border-color: #06c; color: #fff; }
+#mistakes { float: right; font-size: 16px; line-height: 44px; }
+#status { clear: both; min-height: 24px; font-size: 15px; padding: 4px 0; font-weight: bold; }
+/* grayscale: red/green collapse to near-identical grays — mark with text, not hue */
+#status.err { color: #000; font-weight: bold; }
+#status.err::before { content: "! "; }
+#status.ok  { color: #000; }
+#status.ok::before  { content: "OK "; }
+#grid-wrap { text-align: center; padding: 6px 0; }
+#grid { margin: 0 auto; border-collapse: collapse; table-layout: fixed; }
+#grid td {
+  width: 44px; height: 44px;
+  border: 1px solid #000;
+  text-align: center; vertical-align: middle;
+  font-size: 22px; font-weight: bold;
+  cursor: pointer; padding: 0;
+  position: relative;
+  background: #fff;
+}
+#grid td.given { background: #ddd; cursor: default; }
+#grid td.x { color: #c00; }
+#grid td.o { color: #06c; }
+#grid td.has-num { background: #fff; }
+#grid td .num {
+  position: absolute; top: 1px; left: 3px;
+  font-size: 11px; font-weight: bold; color: #333;
+}
+#grid td .sym { display: inline-block; }
+/* grayscale feedback: bad = full cell inversion, good = 3px inner frame (no fill flash) */
+#grid td.flash-bad { background: #000; color: #fff; }
+#grid td.flash-bad .num { color: #fff; }
+#grid td.flash-good {
+  background: #fff;
+  -webkit-box-shadow: inset 0 0 0 3px #000;
+  box-shadow: inset 0 0 0 3px #000;
+}
+#footer { overflow: hidden; padding: 6px 0; }
+#btn-save { float: left; }
+#btn-resume { float: left; margin-left: 6px; }
+#btn-result { float: left; margin-left: 6px; display: none; }
+#save-state { float: right; font-size: 14px; line-height: 36px; color: #555; }
+
+/* ---- result screen -------------------------------------------------- */
+#result {
+  display: none;
+  border: 2px solid #000;
+  background: #fff;
+  padding: 12px;
+  margin: 8px 0;
+  text-align: center;
+}
+#result h2 { font-size: 24px; margin: 4px 0 10px; }
+#result .res-line { margin: 6px 0; font-size: 18px; }
+#result .res-btns { margin-top: 14px; }
+#result .res-btns .btn { margin: 4px; }
+
+/* ---- misc ----------------------------------------------------------- */
+.field { margin: 6px 0; }
+.btn.primary { background: #000; color: #fff; }
+.btn.primary:active { background: #444; }
+.btn.disabled { background: #fff; color: #666; border: 2px solid #999; }
+.help {
+  border: 1px solid #666;
+  background: #eee;
+  padding: 8px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+.foot { clear: both; margin-top: 10px; font-size: 13px; color: #333; }
+.msg { padding: 8px 0; min-height: 24px; }
+.big { font-size: 20px; }
+.muted { color: #555; font-size: 14px; }
+ul.plain { margin: 6px 0; padding-left: 22px; }
+
+/* ---- shared page bits (home/tutorial/create/trainer/live) ----------- */
+#grid td.hl { background: #000; color: #fff; }
+#grid td.hl .num, #grid td.hl .sym { color: #fff; }
+#grid td.editable { cursor: pointer; }
+#grid.viewer td { cursor: default; }
+#grid td .gsol {
+  position: absolute; right: 1px; bottom: 0;
+  font-size: 10px; color: #555; line-height: 1;
+}
+#grid td { position: relative; }
+
+.instr {
+  border: 2px solid #000; background: #fff;
+  padding: 10px; margin: 8px 0; font-size: 18px; line-height: 1.45;
+}
+.instr .hl { background: #000; color: #fff; padding: 0 4px; }
+
+.toolbar { margin: 6px 0; overflow: hidden; }
+.toolbar .btn { margin: 2px 4px 2px 0; }
+.toolbar .grp { display: inline-block; vertical-align: top; }
+.palette {
+  border: 1px solid #666; background: #eee;
+  padding: 6px; margin: 6px 0; overflow: hidden;
+}
+.palette .btn { min-width: 44px; margin: 2px 2px 0 0; }
+.palette .btn.on { background: #000; color: #fff; }
+.palette .lbl { display: inline-block; font-size: 14px; color: #333;
+  vertical-align: middle; margin-right: 6px; }
+
+.stats-table { border-collapse: collapse; margin: 8px 0; }
+.stats-table th, .stats-table td {
+  border: 1px solid #666; padding: 5px 10px;
+  font-size: 16px; text-align: left;
+}
+.stats-table th { background: #eee; }
+
+.feed { margin: 8px 0; }
+.feed-item {
+  border: 1px solid #666; background: #fff;
+  padding: 8px; margin: 6px 0;
+}
+.feed-item .fi-head { font-weight: bold; font-size: 17px; }
+.feed-item .fi-sub { font-size: 14px; color: #333; margin-top: 3px; }
+.feed-item .btn { margin-top: 6px; }
+
+.setup-box { width: 100%; height: 70px; font-size: 16px; }
+select { font-size: 18px; padding: 8px; min-height: 44px; }
+
+.big-num { font-size: 28px; font-weight: bold; }
+.timer-low { background: #000; color: #fff; padding: 0 6px; }
